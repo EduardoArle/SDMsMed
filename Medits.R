@@ -86,6 +86,7 @@ TAAdata$new_ID <- paste(TAAdata$haul_number, TAAdata$day, TAAdata$month,
 
 TBdata$hauling_longitude <- NA
 TBdata$hauling_latitude <- NA
+TBdata$hauling_depth <- NA
 
 #forloop the hell of it!
 for(i in 1:nrow(TBdata))
@@ -98,6 +99,7 @@ for(i in 1:nrow(TBdata))
     
     TBdata$hauling_longitude[i] <- TAAdata$decimalLongitude[a]
     TBdata$hauling_latitude[i] <- TAAdata$decimalLatitude[a]
+    TBdata$hauling_depth[i] <- TAAdata$hauling_depth[a]
   }
   
   print(i)
