@@ -3,11 +3,12 @@
 ################################################################################
 
 #load packages
-library(plyr); library(sf)
+library(plyr); library(sf); library(terra)
 
 #list WDs
 wd_medits <- '/Users/carloseduardoaribeiro/Documents/Collaborations/Uri Roll/Data/MEDITS'
 wd_med <- '/Users/carloseduardoaribeiro/Documents/Post-doc/CNA marine/Data/Intersect_EEZ_IHO_v4_simplified'
+wd_variables <- '/Users/carloseduardoaribeiro/Documents/Collaborations/Uri Roll/Data/BioOracle/Present'
 
 #load fish table
 setwd(wd_medits)
@@ -37,6 +38,10 @@ rec_sps <- ddply(fish_table, .(speciesName), nrow)
 sps_50 <- rec_sps[rec_sps$V1 >= 50,]
 nrow(sps_50)
 
+#load one variable layer
+setwd(wd_variables)
+var <- rast(list.files()[[1]])
+
 #visualise
 hist(rec_sps$V1)
 hist(sps_50$V1)
@@ -48,7 +53,20 @@ fish_sf <- st_as_sf(fish_table,
 #load Mediterranean SHP
 med <- st_read(layer = 'Mediterranean_regions', dsn = wd_med)
 
+#create an ID raster from one of the variables
+ID_raster <- var
+ID_raster[which(!is.na(var[]))] <- c(1:length(which(!is.na(var[]))))
+
+#extract values from raster to check which
+fish_sf_ID <- extract(ID_raster, fish_sf)
+
+#include cellID in fish table
+fish_table$cellID <- fish_sf_ID$phyc_mean
+
 #visualise
-plot(st_geometry(med), border = NA, col = 'azure3', bg = 'cornsilk1')
+plot(var, col = 'azure3', colNA = 'cornsilk1',
+     box = NA, legend = NA, axes = NA)
 plot(fish_sf, add = T, pch = 19, col = 'darkgreen', cex = 0.3)
 text(15, 47, 'All fish', cex = 2, font = 2)
+
+#save fish table with cell ID
