@@ -40,6 +40,9 @@ order <- order[-which(order$species == 'Epinephelus aeneus'),]
 #select 10,000 random occurrences to reduce computational time
 order <- order[sample(c(1:nrow(order)), 10000),]
 
+#create object sf for order records
+order_sf <- st_as_sf(order, coords = c('decimalLongitude', 'decimalLatitude'))
+
 
 #################### Presence data  ######################
 
@@ -149,10 +152,38 @@ pa_area <- st_transform(pa_area, crs = old_crs)
 pa_raster <- mask(ID_raster, pa_area)
 
 
+#################### Select pseudo-absence ######################
+
+#extract values from raster to check which
+order_ID <- extract(pa_raster, order_sf)
+
+#include cellID in fish table
+order$cellID <- order_ID$phyc_mean
+
+#eliminate NAs (cells on land or out of the Mediterranean)
+order2 <- order[complete.cases(order$cellID),]
+
+#select only one record per cell
+order3 <- unique(as.data.table(order2), by = 'cellID')
+
+#select same number of pa as presences
+pa <- order3[sample(c(1:nrow(order3)), nrow(occ3)),]
+
+#comnine pres and pa
+pa2 <- data.frame(species = 'Epinephelus aeneus',
+                  database = 'GBIF',
+                  decimalLongitude = pa$decimalLongitude,
+                  decimalLatitude = pa$decimalLatitude,
+                  cellID = pa$cellID)
+
+#combine pr and pa
+occ3$occurrence <- 1
+pa2$occurrence <- 0
+
+data <- rbind(occ3, pa2)
 
 
 #save records
 setwd('/Users/carloseduardoaribeiro/Documents/Collaborations/Uri Roll/Data/Epinephelus aeneus')
-write.csv(occ3, 'Occ_clean.csv', row.names = F)
+write.csv(data, 'Data_models_Epinephelus_aeneus.csv', row.names = F)
 
-#### create pseudo-absences
