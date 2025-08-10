@@ -59,13 +59,21 @@ sdm <- sdm(occurrence ~ ., data = data_obj,
                        'mda', 'gam', 'rf', 'svm'), 
                replication = 'cv', cv.folds = 5, n = 5)
 
+#run models
+sdm <- sdm(occurrence ~ ., data = data_obj,
+           methods = c('glm', 'maxlike',
+                       'gam', 'rf'), 
+           replication = 'cv', cv.folds = 5, n = 5)
+
+gui(sdm)
+
 #save model objects
 setwd(wd_models)
 write.sdm(sdm, 'Epinephelus_aeneus')
 
 
 #get model evaluation
-eval <- getEvaluation(sdm, w = 1:200,
+eval <- getEvaluation(sdm, w = 1:100,
                           wtest='test.dep', 
                           stat=c('AUC','TSS','th'), opt = 2)
 
@@ -100,7 +108,7 @@ sel_TSS <- which(eval$TSS >= 0.4)
 setwd(wd_projections)
 
 pred_pr <- list()
-for(i in 1:200)
+for(i in 1:100)
 {
   pred_pr[[i]] <- predict(sdm, id = i, newdata = vars, 
               filename = paste0('Epinephelus_aeneus_', i, '_',
