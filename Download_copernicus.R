@@ -172,8 +172,8 @@ listVariables_mod(show = "completeList")
 ##### Step 10: download
 
 results <- extractData_mod(cm,
-                variables = c("oceanTemperature", "salinity"),
-                lon = c(-15, 35),
+                variables = c("oceanTemperature", "salinity"),  #
+                lon = c(-15, 37),
                 lat = c(30, 46),
                 startDate = "2000-01-01",
                 endDate = "2020-01-01",
