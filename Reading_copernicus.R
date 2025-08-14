@@ -46,7 +46,7 @@ names(so_months) <- sapply(uniq_idx, function(i) {
 so_months_20y <- so_months[-241]
 
 
-#calculate meanT over 20 years (2000-01 to 2019-12)
+#calculate meanSal over 20 years (2000-01 to 2019-12)
 
 #make a copy of one of the stacks to populate with the results of the calculations
 meanSal_2000_2020 <- so_months[[1]]
@@ -85,10 +85,125 @@ for(i in 1:nlyr(meanSal_2000_2020))
 
 #save
 setwd(wd_processed)
-writeRaster(meanSal_2000_2020, 'MeanSalinity_2000_2020.tif', overwrite = TRUE)
+writeRaster(meanSal_2000_2020, 'MeanSalinity_2000_2020.tif')
 
 
-##### Temperrature #####
+#calculate maxSal over 20 years (2000-01 to 2019-12)
+
+#make a copy of one of the stacks to populate with the results of the calculations
+maxSal_2000_2020 <- so_months[[1]]
+
+#replace every value with an invalid number (9999)
+for(i in 1:nlyr(maxSal_2000_2020))
+{
+  maxSal_2000_2020[[i]][!is.na(maxSal_2000_2020[[i]][])] <- 9999
+  print(i)
+}
+
+#calculate mean salinity for each layer across 20 years
+for(i in 1:nlyr(maxSal_2000_2020))
+{
+  #save info we will need
+  varname <- varnames(maxSal_2000_2020[[i]])
+  name <- names(maxSal_2000_2020[[i]])
+  unit <- units(maxSal_2000_2020[[i]])
+  
+  #select each depth layer from all years
+  layer <- lapply(so_months_20y, function(x){x[[i]]})
+  
+  #stack all rasters of same layer
+  layer_stack <- rast(layer)
+  
+  #extract years from the time dimension
+  years <- format(time(layer_stack), "%Y")
+  
+  #split layer indices by year
+  year_groups <- split(seq_along(years), years)
+  
+  #calculate annual maxima
+  annual_max_list <- lapply(year_groups, function(idxs) {
+    yearly_stack <- layer_stack[[idxs]]
+    app(yearly_stack, max, na.rm = TRUE)
+  })
+  
+  #stack annual max rasters
+  annual_max_stack <- rast(annual_max_list)
+  
+  # Calculate long-term average of annual maxima
+  maxSal_2000_2020[[i]]  <- app(annual_max_stack, mean, na.rm = TRUE)
+  
+  #put information lost back
+  varnames(maxSal_2000_2020[[i]]) <- varname
+  names(maxSal_2000_2020[[i]]) <- name
+  units(maxSal_2000_2020[[i]]) <- unit
+  
+  print(i)
+}
+
+#save
+setwd(wd_processed)
+writeRaster(maxSal_2000_2020, 'MaxSalinity_2000_2020.tif')
+
+
+#calculate minSal over 20 years (2000-01 to 2019-12)
+
+#make a copy of one of the stacks to populate with the results of the calculations
+minSal_2000_2020 <- so_months[[1]]
+
+#replace every value with an invalid number (9999)
+for(i in 1:nlyr(minSal_2000_2020))
+{
+  minSal_2000_2020[[i]][!is.na(minSal_2000_2020[[i]][])] <- 9999
+  print(i)
+}
+
+#calculate mean salinity for each layer across 20 years
+for(i in 1:nlyr(minSal_2000_2020))
+{
+  #save info we will need
+  varname <- varnames(minSal_2000_2020[[i]])
+  name <- names(minSal_2000_2020[[i]])
+  unit <- units(minSal_2000_2020[[i]])
+  
+  #select each depth layer from all years
+  layer <- lapply(so_months_20y, function(x){x[[i]]})
+  
+  #stack all rasters of same layer
+  layer_stack <- rast(layer)
+  
+  #extract years from the time dimension
+  years <- format(time(layer_stack), "%Y")
+  
+  #split layer indices by year
+  year_groups <- split(seq_along(years), years)
+  
+  #calculate annual maxima
+  annual_min_list <- lapply(year_groups, function(idxs) {
+    yearly_stack <- layer_stack[[idxs]]
+    app(yearly_stack, min, na.rm = TRUE)
+  })
+  
+  #stack annual max rasters
+  annual_min_stack <- rast(annual_min_list)
+  
+  # Calculate long-term average of annual minima
+  minSal_2000_2020[[i]]  <- app(annual_min_stack, mean, na.rm = TRUE)
+  
+  #put information lost back
+  varnames(minSal_2000_2020[[i]]) <- varname
+  names(minSal_2000_2020[[i]]) <- name
+  units(minSal_2000_2020[[i]]) <- unit
+  
+  print(i)
+}
+
+#save
+setwd(wd_processed)
+writeRaster(minSal_2000_2020, 'MinSalinity_2000_2020.tif')
+
+
+
+##### Temperature #####
 
 #split the stacks per month
 
@@ -164,4 +279,115 @@ writeRaster(meanTemp_2000_2020, 'MeanTemperature_2000_2020.tif', overwrite = TRU
 
 
 
+#calculate maxSal over 20 years (2000-01 to 2019-12)
 
+#make a copy of one of the stacks to populate with the results of the calculations
+maxTemp_2000_2020 <- thetao_months[[1]]
+
+#replace every value with an invalid number (9999)
+for(i in 1:nlyr(maxTemp_2000_2020))
+{
+  maxTemp_2000_2020[[i]][!is.na(maxTemp_2000_2020[[i]][])] <- 9999
+  print(i)
+}
+
+#calculate mean salinity for each layer across 20 years
+for(i in 1:nlyr(maxTemp_2000_2020))
+{
+  #save info we will need
+  varname <- varnames(maxTemp_2000_2020[[i]])
+  name <- names(maxTemp_2000_2020[[i]])
+  unit <- units(maxTemp_2000_2020[[i]])
+  
+  #select each depth layer from all years
+  layer <- lapply(thetao_months_20y, function(x){x[[i]]})
+  
+  #stack all rasters of same layer
+  layer_stack <- rast(layer)
+  
+  #extract years from the time dimension
+  years <- format(time(layer_stack), "%Y")
+  
+  #split layer indices by year
+  year_groups <- split(seq_along(years), years)
+  
+  #calculate annual maxima
+  annual_max_list <- lapply(year_groups, function(idxs) {
+    yearly_stack <- layer_stack[[idxs]]
+    app(yearly_stack, max, na.rm = TRUE)
+  })
+  
+  #stack annual max rasters
+  annual_max_stack <- rast(annual_max_list)
+  
+  # Calculate long-term average of annual maxima
+  maxTemp_2000_2020[[i]]  <- app(annual_max_stack, mean, na.rm = TRUE)
+  
+  #put information lost back
+  varnames(maxTemp_2000_2020[[i]]) <- varname
+  names(maxTemp_2000_2020[[i]]) <- name
+  units(maxTemp_2000_2020[[i]]) <- unit
+  
+  print(i)
+}
+
+#save
+setwd(wd_processed)
+writeRaster(maxTemp_2000_2020, 'MaxTemperature_2000_2020.tif')
+
+
+#calculate minSal over 20 years (2000-01 to 2019-12)
+
+#make a copy of one of the stacks to populate with the results of the calculations
+minTemp_2000_2020 <- thetao_months[[1]]
+
+#replace every value with an invalid number (9999)
+for(i in 1:nlyr(minTemp_2000_2020))
+{
+  minTemp_2000_2020[[i]][!is.na(minTemp_2000_2020[[i]][])] <- 9999
+  print(i)
+}
+
+#calculate mean salinity for each layer across 20 years
+for(i in 1:nlyr(minTemp_2000_2020))
+{
+  #save info we will need
+  varname <- varnames(minTemp_2000_2020[[i]])
+  name <- names(minTemp_2000_2020[[i]])
+  unit <- units(minTemp_2000_2020[[i]])
+  
+  #select each depth layer from all years
+  layer <- lapply(thetao_months_20y, function(x){x[[i]]})
+  
+  #stack all rasters of same layer
+  layer_stack <- rast(layer)
+  
+  #extract years from the time dimension
+  years <- format(time(layer_stack), "%Y")
+  
+  #split layer indices by year
+  year_groups <- split(seq_along(years), years)
+  
+  #calculate annual minima
+  annual_min_list <- lapply(year_groups, function(idxs) {
+    yearly_stack <- layer_stack[[idxs]]
+    app(yearly_stack, min, na.rm = TRUE)
+  })
+  
+  #stack annual max rasters
+  annual_min_stack <- rast(annual_min_list)
+  
+  # Calculate long-term average of annual minima
+  minTemp_2000_2020[[i]]  <- app(annual_min_stack, mean, na.rm = TRUE)
+  
+  #put information lost back
+  varnames(minTemp_2000_2020[[i]]) <- varname
+  names(minTemp_2000_2020[[i]]) <- name
+  units(minTemp_2000_2020[[i]]) <- unit
+  
+  print(i)
+}
+
+#save
+setwd(wd_processed)
+writeRaster(minTemp_2000_2020, 'MinTemperature_2000_2020.tif')
