@@ -7,13 +7,13 @@ library(sf); library(terra); library(data.table); library(sdm)
 library(sp); library(raster) #for the sdm pakcage
 
 #list WDs
-wd_pr_pa <- '/Users/carloseduardoaribeiro/Documents/Collaborations/Uri Roll/Data/Epinephelus aeneus'
-wd_vars_pr <- '/Users/carloseduardoaribeiro/Documents/Collaborations/Uri Roll/Data/BioOracle/Present'
-wd_vars_2090 <- '/Users/carloseduardoaribeiro/Documents/Collaborations/Uri Roll/Data/BioOracle/2090'
-wd_models <- '/Users/carloseduardoaribeiro/Documents/Collaborations/Uri Roll/Models'
-wd_evaluation <- '/Users/carloseduardoaribeiro/Documents/Collaborations/Uri Roll/Model_evaluation'
-wd_projections <- '/Users/carloseduardoaribeiro/Documents/Collaborations/Uri Roll/Model_projections'
-wd_proj_future <- '/Users/carloseduardoaribeiro/Documents/Collaborations/Uri Roll/Model_projections_2090'
+wd_pr_pa <- '/Users/carloseduardoaribeiro/Documents/Post-doc/ENMs_med/pr_PA'
+wd_vars_pr <- '/Users/carloseduardoaribeiro/Documents/Post-doc/ENMs_med/Variables_present'
+wd_vars_2090 <- '/Users/carloseduardoaribeiro/Documents/Post-doc/ENMs_med/Variables_future'
+wd_models <- '/Users/carloseduardoaribeiro/Documents/Post-doc/ENMs_med/Models'
+wd_evaluation <- '/Users/carloseduardoaribeiro/Documents/Post-doc/ENMs_med/Model_evaluation'
+wd_projections <- '/Users/carloseduardoaribeiro/Documents/Post-doc/ENMs_med/Model_projections'
+wd_proj_future <- '/Users/carloseduardoaribeiro/Documents/Post-doc/ENMs_med/Model_projections_2090'
 
 
 #load present variable layers
